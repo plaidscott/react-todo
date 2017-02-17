@@ -1,44 +1,71 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+
+import ToDoList from './ToDoList';
+import CreateToDo from './CreateToDo';
+
+
+const todos = [
+    {
+        task: 'make React tutorial',
+        isComplete: false
+    },
+    {
+        task: 'go to dentist',
+        isComplete: true
+    },
+    {
+        task: 'eat breakfast',
+        isComplete: false
+    }
+]
 
 
 
 class Main extends Component {
     constructor( props ){
         super( props );
-        this.state= {
-            tasks: []
-        };
 
-    }
-
-    addItem( e ) {
-        e.preventDefault();
-        console.log('e', e )
+        this.state = {
+            todos
+        }
     }
 
     render() {
         return(
-            <div className="container col-centered">
-                <div className="row">Howdy Hi</div>
-                <div className="col-sm-5 col-md-5 col-lg-5 center-block text-center back-one">
-                    <h3 className="col-lg-12 text-center">Input Here</h3>
+                <div>
+                    <h1>React Todo's list</h1>
+                    <CreateToDo createTask={ this.createTask.bind( this ) }/>
+                    <ToDoList
+                        todos={ this.state.todos }
+                        toggleTask={ this.toggleTask.bind( this )}
+                        saveTask={ this.saveTask.bind( this )}
+                    />
                 </div>
-                <form onSubmit={ this.addItem }>
-                    <div className="form-group col-lg-3">
-                        <h2>Name:</h2>
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="task"
-                            placeholder="enter task"
-
-                        />
-                    </div>
-                    <button className="btn btn-primary" type="submit">Submit Name</button>
-                </form>
-            </div>
         )
     }
+
+    toggleTask( task ) {
+        const foundToDo = _.find( this.state.todos, todo => todo.task === task);
+        foundToDo.isComplete = !foundToDo.isComplete;
+        this.setState({ todos: this.state.todos })
+    }
+
+    createTask( task ){
+        this.state.todos.push({
+            task,
+            isCompleted: false
+        });
+        this.setState({ todos: this.state.todos })
+    }
+
+    saveTask( oldTask, newTask){
+        const foundTodo = _.find( this.state.todos, todo => todo.task === oldTask);
+        foundTodo.task = newTask
+        this.setState({ todo: this.state.todos})
+    }
 }
+
+
 
 export default Main;
